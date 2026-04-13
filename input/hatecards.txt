@@ -1,64 +1,57 @@
-# counters
-force of will
-force of negation
-daze
-pact of negation
-
-# storm
-mindbreak trap
-consign to memory
-stifle
-damping sphere
-flusterstorm
-
-# spells
-thalia, guardian of thraben
-deafening silence
-sphere of resistance
-
-# graveyard
-leyline of the void
-rest in peace
-faerie macabre
-dauthi voidwalker
-graffdigger's cage
-surgical extraction
-bojuka bog
-endurance
+# artifacts
+abrade
+clarion conqueror
+collector ouphe
+force of vigor
+karn, the great creator
+meltdown
+null rod
+soul-guide lantern
+stony silence
+wrath of the skies
 
 # card draw
 orcish bowmasters
+
+# counters
+daze
+force of negation
+force of will
+pact of negation
+
+# discard
+cabal therapy
+thoughtseize
+
+# graveyard
+bojuka bog
+dauthi voidwalker
+endurance
+faerie macabre
+graffdigger's cage
+leyline of the void
+rest in peace
+surgical extraction
+
+# misc
+boseiju, who endures
+blue elemental blast
+chalice of the void
+disruptor flute
+ghost quarter
+hydroblast
+lavinia, azorius renegade
+pithing needle
+pyroblast
+red elemental blast
+wasteland
+warping wail
 
 # protection
 leyline of sanctity
 the one ring
 
-# discard
-thoughtseize
-cabal therapy
-
-# artifacts
-meltdown
-collector ouphe
-stony silence
-clarion conqueror
-null rod
-abrade
-force of vigor
-karn, the great creator
-soul-guide lantern
-wrath of the skies
-
-# misc
-disruptor flute
-pithing needle
-wasteland
-boseiju, who endures
-ghost quarter
-chalice of the void
-warping wail
-hydroblast
-blue elemental blast
-pyroblast
-red elemental blast
-lavinia, azorious renegade
+# spells
+deafening silence
+sphere of resistance
+thalia, guardian of thraben
