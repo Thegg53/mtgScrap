@@ -15,6 +15,7 @@ import backoff
 import pyperclip
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.common import ElementClickInterceptedException, NoSuchElementException, \
     StaleElementReferenceException, TimeoutException
 from selenium.webdriver import ActionChains, Keys
@@ -85,7 +86,13 @@ def fetch_dynamic_soup(
         the located element was clicked), clipboard content (if copy-to-clipboard element was
         clicked)
     """
-    with webdriver.Chrome() as driver:
+    # Create Chrome options with headless mode enabled
+    chrome_options = ChromeOptions()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    
+    with webdriver.Chrome(options=chrome_options) as driver:
         _log.info(f"Webdriving using Chrome to: '{url}'...")
 
         if headers:
@@ -139,7 +146,13 @@ def fetch_selenium_json(url: str) -> Json:
     This function assumes there's really JSON string at the destination and uses backoff
     redundancy on any problems with JSON parsing, so it'd better be.
     """
-    with webdriver.Chrome() as driver:
+    # Create Chrome options with headless mode enabled
+    chrome_options = ChromeOptions()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    
+    with webdriver.Chrome(options=chrome_options) as driver:
         _log.info(f"Webdriving using Chrome to: '{url}'...")
         driver.get(url)
         soup = BeautifulSoup(driver.page_source, "lxml")
