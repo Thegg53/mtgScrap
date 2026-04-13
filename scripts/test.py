@@ -9,7 +9,7 @@
 """
 import sys
 
-from mtg.deck.scrapers import ContainerScraper, DeckScraper, DeckTagsContainerScraper, \
+from mtgscrap.deck.scrapers import ContainerScraper, DeckScraper, DeckTagsContainerScraper, \
     DecksJsonContainerScraper, HybridContainerScraper
 
 

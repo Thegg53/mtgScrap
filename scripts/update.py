@@ -9,8 +9,8 @@
 """
 import sys
 
-from mtg.scryfall import download_scryfall_bulk_data, download_scryfall_set_data
-from mtg.mtgwiki import download_page as download_wiki_page
+from mtgscrap.scryfall import download_scryfall_bulk_data, download_scryfall_set_data
+from mtgscrap.mtgwiki import download_page as download_wiki_page
 
 
 def _update():

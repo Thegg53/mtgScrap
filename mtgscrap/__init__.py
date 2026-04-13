@@ -1,0 +1,78 @@
+"""
+
+    mtg
+    ~~~
+    Root package.
+
+    @author: mazz3rr
+
+"""
+import json
+import logging
+import os
+from datetime import date, datetime
+from logging.handlers import RotatingFileHandler
+from pathlib import Path
+from typing import Dict, List, Union
+
+__appname__ = __name__
+__version__ = "0.9"
+__description__ = "Scrape data on MtG decks."
+__author__ = "z33k"
+__license__ = "MIT License"
+
+# type aliases
+type Json = Union[str, int, float, bool, datetime, date, None, Dict[str, "Json"], List["Json"]]
+type PathLike = str | Path
+
+
+FILENAME_TIMESTAMP_FORMAT = "%Y%m%d_%H%M%S"
+READABLE_TIMESTAMP_FORMAT = "%Y-%m-%d %H:%M:%S"
+SECONDS_IN_YEAR = 365.25 * 24 * 60 * 60  # with leap years
+VAR_DIR = Path(os.getcwd()) / "var"
+DATA_DIR = VAR_DIR / "data"
+OUTPUT_DIR = VAR_DIR / "output"
+DECKS_DIR = OUTPUT_DIR / "decks"
+AVOIDED_DIR = OUTPUT_DIR / "avoided"
+LOG_DIR = VAR_DIR / "logs" if (VAR_DIR / "logs").exists() else Path(os.getcwd())
+README = Path(os.getcwd()) / "README.md"
+LOG_SIZE = 1024*1024*20  # 20MB
+
+
+_logging_initialized = False
+
+
+def read_logs() -> list[str]:
+    return [l for p in LOG_DIR.iterdir() if p.name.endswith(".log") or ".log." in p.name
+            for l in p.read_text(encoding="utf-8").splitlines()]
+
+
+def init_log() -> None:
+    """Initialize logging.
+    """
+    global _logging_initialized
+
+    if not _logging_initialized:
+        logfile = LOG_DIR / "mtg.log"
+        log_format = '%(asctime)s [%(name)s] %(levelname)s: %(message)s'
+        log_level = logging.INFO
+
+        root_logger = logging.getLogger()
+        root_logger.setLevel(log_level)
+        formatter = logging.Formatter(log_format)
+        handler = RotatingFileHandler(logfile, maxBytes=LOG_SIZE, backupCount=10)
+        handler.setFormatter(formatter)
+        handler.setLevel(log_level)
+        root_logger.addHandler(handler)
+
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(formatter)
+        stream_handler.setLevel(log_level)
+        root_logger.addHandler(stream_handler)
+
+        _logging_initialized = True
+
+
+init_log()
+
+
