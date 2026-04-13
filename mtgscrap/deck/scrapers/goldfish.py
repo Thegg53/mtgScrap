@@ -15,7 +15,7 @@ from datetime import datetime
 
 from mtgscrap import Json
 from mtgscrap.utils import extract_int, timed
-from mtgscrap.utils.scrape import ScrapingError, http_requests_counted, fetch_throttled_soup
+from mtgscrap.utils.scraping import ScrapingError, http_requests_counted, fetch_throttled_soup
 
 _log = logging.getLogger(__name__)
 

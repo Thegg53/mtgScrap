@@ -1,12 +1,4 @@
-"""
-
-    mtgscrap.utils.scrape
-    ~~~~~~~~~~~~~~~~~~~~~
-    Minimal scraping utilities for MTGGoldfish.
-
-    @author: mazz3rr
-
-"""
+"""Scraping utilities for MTGGoldfish."""
 import logging
 import random
 import time
@@ -20,7 +12,7 @@ from requests import Response
 from requests.exceptions import HTTPError
 
 from mtgscrap import Json
-from mtgscrap.utils import timed
+from mtgscrap.utils.core import timed
 from mtgscrap.utils.check_type import type_checker
 
 _log = logging.getLogger(__name__)
