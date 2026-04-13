@@ -1,4 +1,4 @@
-.PHONY: help venv install install-dev scrape-legacy clean
+.PHONY: help venv install install-dev scrape-legacy analyze-hate clean
 
 help:
 	@echo "MTG Scraper - Available Commands"
@@ -7,6 +7,7 @@ help:
 	@echo "make install        - Install dependencies (requires active venv)"
 	@echo "make install-dev    - Install dependencies + dev tools"
 	@echo "make scrape-legacy  - Run Legacy format scraper and export to CSV"
+	@echo "make analyze-hate   - Analyze hate cards from latest scrape"
 	@echo "make clean          - Remove venv and cache files"
 
 venv:
@@ -20,6 +21,9 @@ install-dev:
 
 scrape-legacy:
 	. venv/bin/activate && PYTHONPATH=$(PWD) python scripts/scrape_legacy.py
+
+analyze-hate:
+	. venv/bin/activate && PYTHONPATH=$(PWD) python scripts/analyze_hate_cards.py
 
 clean:
 	rm -rf venv __pycache__ .pytest_cache

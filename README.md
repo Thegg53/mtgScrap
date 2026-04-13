@@ -1,18 +1,18 @@
 # MTG Legacy Meta Scraper
 
-Minimal scraper for MTGGoldfish Legacy format metagame sideboard statistics. Exports archetype decklists with aggregated sideboard card data to CSV.
+Minimal scraper for MTGGoldfish Legacy format metagame sideboard statistics. Exports archetype decklists with aggregated sideboard and maindeck card data to CSV. Also includes hate card analysis across archetypes.
 
 ## What This Does
 
-- **Scrapes MTGGoldfish meta page** — Gets the latest Legacy format archetype decks and sideboard stats
-- **Extracts sideboard data** — Aggregated sideboard card statistics (avg count, % of decks using)
-- **Exports to CSV** — Date, archetype name, and card-level sideboard data
-- **Headless browser** — Chrome runs in background via Selenium (no visible windows)
+- **Scrapes MTGGoldfish meta page** — Gets the latest Legacy format archetype decks with maindeck and sideboard stats
+- **Extracts card data** — Aggregated maindeck and sideboard card statistics (avg count, % of decks using)
+- **Exports to CSV** — Date, archetype name, and card-level maindeck/sideboard data
+- **Analyzes hate cards** — Generates a report of hate card usage per archetype from `input/hatecards.txt`
 - **Optional throttling** — Random 1-3 second delays between requests to avoid blocking
 
 ## Installation
 
-**Requirements:** macOS, Python 3.12+, Chrome/Chromium browser
+**Requirements:** macOS, Python 3.12+
 
 ```bash
 # Clone and enter repo
@@ -35,7 +35,18 @@ This will create a `venv/` directory with all required packages.
 make scrape-legacy
 ```
 
-Creates timestamped CSV in `output/legacy_decklists_YYYYMMDD_HHMMSS.csv`
+Creates timestamped CSV in `output/decks/legacy_decklists_YYYYMMDD_HHMMSS.csv`
+
+### Analyze Hate Cards
+
+```bash
+make analyze-hate
+```
+
+Generates a one-page report of hate card usage per archetype:
+- Saved to `output/reports/hate_cards_report_YYYYMMDD_HHMMSS.txt` (matches the latest scrape)
+- Displays maindeck and sideboard usage for each hate card
+- Easy-to-read format suitable for printing or PDF conversion
 
 ### Scrape with Throttling
 
@@ -59,8 +70,8 @@ Adds random 1-3 second delays between deck scrapes to avoid being blocked:
 
 Shows:
 - Which archetype decks are being scraped
-- Number of sideboard cards found per archetype
-- First 3 sideboard cards with stats
+- Number of maindeck and sideboard cards found per archetype
+- First 3 cards with stats
 
 ## Flags
 
@@ -70,9 +81,22 @@ Shows:
 | `--throttle` | Add random 1-3 second delays between deck scrapes |
 | `--debug` | Enable verbose logging with detailed output |
 
+## Makefile Targets
+
+```bash
+make venv           # Create Python 3.12+ virtual environment
+make install        # Install dependencies (requires active venv)
+make scrape-legacy  # Run Legacy format scraper and export to CSV
+make analyze-hate   # Analyze hate cards from latest scrape
+make clean          # Remove venv and cache files
+```
+
 ## Output Format
 
-CSV with columns:
+### Deck CSV
+Location: `output/decks/legacy_decklists_YYYYMMDD_HHMMSS.csv`
+
+Columns:
 - `date` — Scrape date (YYYY-MM-DD)
 - `deck_name` — Archetype name (e.g., "Dimir Tempo")
 - `format` — Always "legacy" for this scraper
