@@ -1,16 +1,5 @@
-"""
+"""mtgscrap.deck - Deck scraping and export utilities."""
+from mtgscrap.deck.goldfish import MinimalDeck, scrape_meta
+from mtgscrap.deck.export import export_decks_to_csv
 
-    mtgscrap.deck
-    ~~~~~~~~~~~~~
-    Minimal deck module for MTGGoldfish scraping.
-
-    @author: mazz3rr
-
-"""
-from __future__ import annotations
-
-import logging
-
-from mtgscrap.utils import ParsingError
-
-_log = logging.getLogger(__name__)
+__all__ = ["MinimalDeck", "scrape_meta", "export_decks_to_csv"]

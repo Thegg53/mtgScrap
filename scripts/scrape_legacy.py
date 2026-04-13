@@ -7,7 +7,7 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
-from mtgscrap.deck.scrapers.goldfish import scrape_meta
+from mtgscrap.deck.goldfish import scrape_meta
 from mtgscrap.deck.export import export_decks_to_csv
 
 OUTPUT_DIR = Path(__file__).parent.parent / "output"

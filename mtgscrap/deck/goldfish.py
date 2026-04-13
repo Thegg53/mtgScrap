@@ -1,12 +1,4 @@
-"""
-
-    mtg.deck.scrapers.goldfish
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Scrape MTGGoldfish Legacy meta decklists and sideboard data.
-
-    @author: mazz3rr
-
-"""
+"""Scrape MTGGoldfish Legacy meta decklists and sideboard data."""
 import logging
 import random
 import time
@@ -15,7 +7,7 @@ from datetime import datetime
 
 from mtgscrap import Json
 from mtgscrap.utils import extract_int, timed
-from mtgscrap.utils.scraping import ScrapingError, http_requests_counted, fetch_throttled_soup
+from mtgscrap.scraping import ScrapingError, http_requests_counted, fetch_throttled_soup
 
 _log = logging.getLogger(__name__)
 
