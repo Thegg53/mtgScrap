@@ -20,7 +20,6 @@ from selenium.common.exceptions import ElementClickInterceptedException, Timeout
 
 from mtg import Json
 from mtg.deck import CardNotFound, Deck, DeckParser, InvalidDeck
-from mtg.deck.arena import ArenaParser
 from mtg.utils import ParsingError, register_type, timed
 from mtg.utils.scrape import InaccessiblePage, ScrapingError, Soft404Error, fetch_soup, find_links, \
     prepend_url
@@ -77,10 +76,8 @@ class NestedDeckParser(DeckParser):
     def _get_sub_parser(self) -> Self | None:
         """Return a sub-parser object to delegate deck-parsing to.
 
-        By default, return an Arena/MGTO text decklist parser if the decklist is available.
+        By default, returns None (arena parser removed).
         """
-        if self._decklist:
-            return ArenaParser(self._decklist, self._metadata)
         return None
 
     @override

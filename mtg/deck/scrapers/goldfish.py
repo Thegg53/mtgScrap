@@ -8,21 +8,44 @@
 
 """
 import logging
+from dataclasses import dataclass, field
 from typing import override
 
 import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck import Deck, Mode
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     TagBasedDeckParser, UrlHook, throttled_deck_scraper
-from mtg.scryfall import all_formats
 from mtg.utils import ParsingError, extract_int, timed
 from mtg.utils.scrape import ScrapingError, http_requests_counted, strip_url_query, \
     fetch_throttled_soup
 
 _log = logging.getLogger(__name__)
+
+
+# Minimal Deck class for sideboard scraping
+@dataclass
+class MinimalDeck:
+    """Minimal deck object holding only what's needed for sideboard scraping."""
+    name: str
+    format: str = "legacy"
+    archetype: str = ""
+    source: str = ""
+    decklist: str = ""
+    metadata: dict = field(default_factory=dict)
+    
+    def update_metadata(self, **kwargs) -> None:
+        """Update metadata dict."""
+        for key, value in kwargs.items():
+            if key == "meta":
+                self.metadata.update(value)
+            elif key == "mode":
+                self.metadata["mode"] = value
+            elif key == "sideboard":
+                self.metadata["sideboard"] = value
+            else:
+                self.metadata[key] = value
 
 
 HEADERS = {
@@ -384,24 +407,29 @@ def scrape_archetype_sideboard(archetype_url: str) -> list[dict]:
 
 @http_requests_counted("scraping meta decks")
 @timed("scraping meta decks", precision=1)
-def scrape_meta(fmt="standard", limit: int | None = None) -> list[Deck]:
+def scrape_meta(fmt="standard", limit: int | None = None, throttle: bool = False) -> list[MinimalDeck]:
     """Scrape MTGGoldfish meta page for a given format.
     
     Args:
         fmt: MTG format (e.g., "legacy", "modern")
         limit: optionally, limit the number of decks to scrape (useful for testing)
+        throttle: add random 1-3 second delay between deck scrapes to avoid blocking
+    
+    Returns:
+        List of MinimalDeck objects with sideboard data
     """
+    from datetime import datetime
+    import random
+    import time
+    
     fmt = fmt.lower()
-    # Skip format validation to avoid loading Scryfall bulk data
-    # if fmt not in all_formats():
-    #     raise ValueError(f"Invalid format: {fmt!r}. Can be only one of: {all_formats()}")
     url = f"https://www.mtggoldfish.com/metagame/{fmt}/full"
     soup = fetch_throttled_soup(url, headers=HEADERS)
     if not soup:
-        raise ScrapingError(scraper=GoldfishDeckScraper, url=url)
+        raise ScrapingError(f"Failed to fetch {url}")
     tiles = soup.find_all("div", class_="archetype-tile")
     if not tiles:
-        raise ScrapingError("No deck tiles tags found", scraper=GoldfishDeckScraper, url=url)
+        raise ScrapingError("No archetype tiles found")
     
     # Apply limit if specified
     if limit:
@@ -409,24 +437,43 @@ def scrape_meta(fmt="standard", limit: int | None = None) -> list[Deck]:
     
     decks, metas = [], []
     for i, tile in enumerate(tiles, start=1):
-        link = tile.find("a").attrs["href"]
-        archetype_url = f"https://www.mtggoldfish.com{link}"
-        deck = GoldfishDeckScraper(
-            archetype_url, {"format": fmt}).scrape(
-            throttled=True)
+        link = tile.find("a")
+        if not link or "href" not in link.attrs:
+            continue
+        
+        archetype_url = f"https://www.mtggoldfish.com{link.attrs['href']}"
+        
+        # Extract archetype name from URL (e.g., /archetype/legacy-dimir-tempo -> Dimir Tempo)
+        archetype_slug = link.attrs['href'].split("/")[-1]
+        # Remove format prefix (e.g., "legacy-")
+        if "-" in archetype_slug:
+            archetype_slug = "-".join(archetype_slug.split("-")[1:])
+        # Convert slug to title case (dimir-tempo -> Dimir Tempo)
+        archetype_name = " ".join(word.capitalize() for word in archetype_slug.split("-"))
+        
+        # Create minimal deck object
+        deck = MinimalDeck(name=archetype_name, format=fmt, archetype=archetype_name)
+        
         count = tile.find("span", class_="archetype-tile-statistic-value-extra-data").text.strip()
         count = extract_int(count)
         metas.append({"place": i, "count": count})
         decks.append((deck, archetype_url))
+    
     total = sum(m["count"] for m in metas)
-    for (deck, archetype_url), meta in zip(decks, metas):
+    for idx, ((deck, archetype_url), meta) in enumerate(zip(decks, metas)):
         meta["share"] = meta["count"] * 100 / total
+        meta["date"] = datetime.now().strftime("%Y-%m-%d")
         deck.update_metadata(meta=meta)
-        deck.update_metadata(mode=Mode.BO3.value)
         
         # Scrape sideboard data for this archetype
         sideboard_data = scrape_archetype_sideboard(archetype_url)
         if sideboard_data:
             deck.update_metadata(sideboard=sideboard_data)
+        
+        # Add throttling delay between decks (except after the last one)
+        if throttle and idx < len(decks) - 1:
+            delay = random.uniform(1, 3)
+            _log.debug(f"Throttling: waiting {delay:.2f}s before next deck")
+            time.sleep(delay)
     
     return [deck for deck, _ in decks]

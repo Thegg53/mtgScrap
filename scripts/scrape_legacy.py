@@ -13,12 +13,13 @@ from mtg.deck.export import export_decks_to_csv
 OUTPUT_DIR = Path(__file__).parent.parent / "output"
 
 
-def scrape_legacy_decklists(limit: int | None = None, debug: bool = False) -> None:
+def scrape_legacy_decklists(limit: int | None = None, debug: bool = False, throttle: bool = False) -> None:
     """Scrape MTGGoldfish Legacy format meta page and export to CSV.
     
     Args:
         limit: optionally, limit the number of decks to scrape (useful for testing)
         debug: enable debug logging
+        throttle: add random 1-3 second delay between deck scrapes to avoid blocking
     """
     # Configure logging
     log_level = logging.DEBUG if debug else logging.INFO
@@ -37,7 +38,7 @@ def scrape_legacy_decklists(limit: int | None = None, debug: bool = False) -> No
         # Scrape Legacy format decklists from MTGGoldfish meta page
         limit_str = f" (limit: {limit})" if limit else ""
         logger.info(f"Scraping MTGGoldfish meta page for Legacy format{limit_str}...")
-        decks = scrape_meta(fmt="legacy", limit=limit)
+        decks = scrape_meta(fmt="legacy", limit=limit, throttle=throttle)
         
         if not decks:
             logger.warning("No decks scraped. Check if the page structure has changed.")
@@ -91,6 +92,11 @@ if __name__ == "__main__":
         action="store_true",
         help="Enable debug logging with detailed output"
     )
+    parser.add_argument(
+        "--throttle",
+        action="store_true",
+        help="Add random 1-3 second delay between deck scrapes to avoid blocking"
+    )
     args = parser.parse_args()
     
-    scrape_legacy_decklists(limit=args.limit, debug=args.debug)
+    scrape_legacy_decklists(limit=args.limit, debug=args.debug, throttle=args.throttle)

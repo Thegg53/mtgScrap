@@ -7,6 +7,8 @@
     @author: mazz3rr
 
 """
+from __future__ import annotations
+
 import contextlib
 import itertools
 import logging
@@ -19,13 +21,17 @@ from operator import attrgetter, itemgetter
 from typing import Any, Iterable, Iterator, Self
 
 from mtg import Json
-from mtg.scryfall import (
-    COMMANDER_FORMATS, Card, Color,
-    MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, aggregate,
-    all_formats, find_by_cardmarket_id, find_by_collector_number,
-    find_by_mtgo_id, find_by_name, find_by_oracle_id,
-    find_by_scryfall_id, find_by_tcgplayer_id, find_sets,
-    query_api_for_card)
+try:
+    from mtg.scryfall import (
+        COMMANDER_FORMATS, Card, Color,
+        MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, aggregate,
+        all_formats, find_by_cardmarket_id, find_by_collector_number,
+        find_by_mtgo_id, find_by_name, find_by_oracle_id,
+        find_by_scryfall_id, find_by_tcgplayer_id, find_sets,
+        query_api_for_card)
+except ModuleNotFoundError:
+    # Scryfall module not available - OK for minimal scraping workflows
+    pass
 from mtg.utils import ParsingError, from_iterable, getid, getrepr, remove_furigana, type_checker
 from mtg.utils.json import to_json
 from mtg.utils.scrape import get_netloc_domain

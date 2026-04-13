@@ -6,6 +6,8 @@
     @author: mazz3rr
 
 """
+from __future__ import annotations
+
 import csv
 import json
 import logging
@@ -14,14 +16,12 @@ from typing import Literal
 
 from mtg import OUTPUT_DIR, PathLike
 from mtg.deck import CardNotFound, Deck, DeckParser, Mode
-from mtg.deck.arena import ArenaParser, IllFormedArenaDecklist, is_arena_decklist
-from mtg.scryfall import Card, aggregate, set_cards
 from mtg.utils import ParsingError, from_iterable
 from mtg.utils.files import getdir, getfile, sanitize_filename, truncate_path
 from mtg.utils.json import from_json as deserialize_json, to_json
 
 _log = logging.getLogger(__name__)
-FORMATS = "arena", "forge", "json", "xmage"
+FORMATS = "forge", "json", "xmage"
 
 
 class Exporter:
@@ -526,11 +526,17 @@ def export_decks_to_csv(
             sideboard_data = metadata.get("sideboard", [])
             sideboard_str = json.dumps(sideboard_data) if sideboard_data else ""
             
+            # Handle both Archetype enum and string
+            if deck.archetype:
+                archetype_str = deck.archetype.name if hasattr(deck.archetype, 'name') else str(deck.archetype)
+            else:
+                archetype_str = ""
+            
             row = {
                 "date": date or "",
                 "deck_name": deck.name or "",
                 "format": deck.format or "",
-                "archetype": deck.archetype.name if deck.archetype else "",
+                "archetype": archetype_str,
                 "author": metadata.get("author") or deck.source or "",
                 "url": url,
                 "maindeck_cards": deck.decklist,

@@ -7,6 +7,8 @@
     @author: mazz3rr
 
 """
+from __future__ import annotations
+
 import logging
 from typing import override
 
@@ -14,8 +16,12 @@ import regex as re
 
 from mtg import Json
 from mtg.deck import ARENA_MULTIFACE_SEPARATOR, CardNotFound, DeckParser
-from mtg.scryfall import COMMANDER_FORMATS, Card, \
-    MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, query_api_for_card
+try:
+    from mtg.scryfall import COMMANDER_FORMATS, Card, \
+        MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, query_api_for_card
+except ModuleNotFoundError:
+    # Scryfall module not available - OK for minimal scraping workflows
+    pass
 from mtg.utils import ParsingError, extract_int, getrepr, is_foreign, sanitize_whitespace
 
 _log = logging.getLogger(__name__)
