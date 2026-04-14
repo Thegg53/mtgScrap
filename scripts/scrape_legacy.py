@@ -59,7 +59,7 @@ def scrape_legacy_decklists(limit: int | None = None, debug: bool = False, throt
         OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
         
         # Generate timestamped CSV filename
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
         csv_filename = OUTPUT_DIR / f"legacy_decklists_{timestamp}.csv"
         
         logger.debug(f"Exporting to: {csv_filename}")

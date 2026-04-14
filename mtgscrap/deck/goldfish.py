@@ -217,7 +217,7 @@ def scrape_meta(fmt="standard", limit: int | None = None, throttle: bool = False
     total = sum(m["count"] for m in metas)
     for idx, ((deck, archetype_url), meta) in enumerate(zip(decks, metas)):
         meta["share"] = meta["count"] * 100 / total
-        meta["date"] = datetime.now().strftime("%Y-%m-%d")
+        meta["date"] = datetime.utcnow().strftime("%Y-%m-%d")
         meta["url"] = archetype_url
         deck.update_metadata(meta=meta)
         
