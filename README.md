@@ -13,7 +13,7 @@ Minimal scraper for MTGGoldfish Legacy format metagame statistics. Exports arche
 
 ## Installation
 
-**Requirements:** macOS, Python 3.12+
+**Requirements:** Python 3.12+
 
 ```bash
 # Clone and enter repo
