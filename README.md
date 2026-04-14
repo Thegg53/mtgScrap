@@ -94,16 +94,6 @@ Shows:
 | `--throttle` | Add random 1-3 second delays between deck scrapes |
 | `--debug` | Enable verbose logging with detailed output |
 
-## Makefile Targets
-
-```bash
-make venv           # Create Python 3.12+ virtual environment
-make install        # Install dependencies (requires active venv)
-make scrape-legacy  # Run Legacy format scraper and export to CSV
-make analyze-hate   # Analyze hate cards from latest scrape
-make clean          # Remove venv and cache files
-```
-
 ## Output Format
 
 ### Deck CSV
@@ -169,4 +159,8 @@ make clean          # Remove venv and cache files
 - Scraping is throttled (0.6-0.8s delays between requests per MTGGoldfish)
 - Chrome runs **headless** (no windows visible) — check logs for status
 - Sideboard data only includes cards used in 30%+ of meta decks
+
+## TODO
+
+- [ ] Change GitHub Actions cron schedule from hourly to Tuesdays at 9:00 AM GMT (`0 9 * * 2`)
 
