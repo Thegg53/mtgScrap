@@ -14,3 +14,7 @@ dependencies = [
     "contexttimer~=0.3.3",
     "weasyprint>=59",
 ]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mtgscrap*"]
