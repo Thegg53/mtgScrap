@@ -3,7 +3,7 @@ name: Weekly MTG Scraper
 on:
   schedule:
     # Runs every hour at minute 10
-    - cron: '10 * * * *'
+    - cron: '10 1 * * 2'
   workflow_dispatch:  # Allow manual trigger
 
 jobs:
